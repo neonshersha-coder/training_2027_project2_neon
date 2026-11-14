@@ -36,11 +36,36 @@ void main() {
   );
 }
 
-class MyApp extends ConsumerWidget {
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends ConsumerState<MyApp> {
+
+  final TextEditingController teamController = TextEditingController();
+  final TextEditingController matchController = TextEditingController();
+  final TextEditingController teamNumberController = TextEditingController();
+
+  bool textFieldFilled = false;
+
+  void checkFields() {
+    setState(() {
+      textFieldFilled = teamController.text.isNotEmpty && matchController.text.isNotEmpty && teamNumberController.text.isNotEmpty;
+    });
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    teamNumberController.dispose();
+    teamController.dispose();
+    matchController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
 
         extendBodyBehindAppBar: true,
@@ -80,6 +105,7 @@ class MyApp extends ConsumerWidget {
                 child: Column(
                   children: [
                     TextField(
+                      controller: matchController,
                       keyboardType: TextInputType.number,
                       style: const TextStyle(color: Colors.white),
                       decoration: const InputDecoration(
@@ -87,6 +113,7 @@ class MyApp extends ConsumerWidget {
                         labelStyle: TextStyle(color: Colors.white),
                       ),
                       onChanged: (textValue) {
+                        checkFields();
                         int number = int.tryParse(textValue) ?? 0;
                         ref.read(matchNumberBox.notifier).state = number;
                       },
@@ -94,6 +121,7 @@ class MyApp extends ConsumerWidget {
                     const SizedBox(height: 25),
 
                     TextField(
+                      controller: teamNumberController,
                       keyboardType: TextInputType.number,
                       style: const TextStyle(color: Colors.white),
                       decoration: const InputDecoration(
@@ -101,6 +129,7 @@ class MyApp extends ConsumerWidget {
                         labelStyle: TextStyle(color: Colors.white),
                       ),
                       onChanged: (textValue) {
+                        checkFields();
                         int number = int.tryParse(textValue) ?? 0;
                         ref.read(teamNumberBox.notifier).state = number;
                       },
@@ -108,12 +137,14 @@ class MyApp extends ConsumerWidget {
                     const SizedBox(height: 25),
 
                     TextField(
+                      controller: teamController,
                       style: const TextStyle(color: Colors.white),
                       decoration: const InputDecoration(
                         labelText: "Enter Team Name",
                         labelStyle: TextStyle(color: Colors.white),
                       ),
                         onChanged: (textValue) {
+                        checkFields();
                         ref.read(teamNameBox.notifier).state = textValue;
                       },
                     ),
@@ -122,7 +153,7 @@ class MyApp extends ConsumerWidget {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 25),
-                  backgroundColor: const Color(0xFFDCAEAE),
+                  backgroundColor: textFieldFilled ? Colors.orange : const Color(0xFFDCAEAE),
                   foregroundColor: Colors.white,
                   elevation: 3,
                   shape: RoundedRectangleBorder(
@@ -139,7 +170,7 @@ class MyApp extends ConsumerWidget {
                         context: context,
                           builder: (context) {
                           return AlertDialog(
-                            title: const Text("Please fill out Match Number, Team Number, and Team Name before continuing."),
+                            title: const Text("Please fill out Match Number with integer(s), Team Number integer(s), and Team Name character(s) before continuing."),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(context),
