@@ -206,16 +206,77 @@ class _MyAppState extends ConsumerState<MyApp> {
 }
 
 
-class ScoutingScreen extends ConsumerWidget {
+class ScoutingScreen extends ConsumerStatefulWidget {
   const ScoutingScreen({super.key});
 
   @override
+  ConsumerState<ScoutingScreen> createState() => _ScoutingScreen();
+}
 
-  Widget build(BuildContext context, WidgetRef ref) {
-    return const Scaffold(
-      body: Center(
-        child: Text("Scouting Screen Page"),
+class _ScoutingScreen extends ConsumerState<ScoutingScreen> {
+
+  @override
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        leadingWidth: 120,
+        leading: Padding(
+           padding: const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 8.0),
+          child: ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white.withValues(alpha: 0.2),
+              foregroundColor: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0)
+              ),
+            ),
+            onPressed: () {
+              context.go('/');
+            },
+            icon: const Icon(Icons.arrow_back),
+            label: Text(
+              "Back",
+              style: GoogleFonts.nunito(
+                fontSize: 14.0,
+                fontWeight: FontWeight.w900,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        title: Text(
+          "Reefscape Scouting",
+          style: GoogleFonts.nunito(
+            fontSize: 45.0,
+            fontWeight: FontWeight.w900,
+            color: Colors.white,
+          ),
+        ),
       ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF5A359C),
+              Color(0xFF7149B5),
+              Color(0xFFA793CD),
+            ],
+          ),
+        ),
+        child: Column(
+          children: [],
+        ),
+        ),
     );
   }
 }
