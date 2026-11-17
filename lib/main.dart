@@ -253,7 +253,7 @@ class _ScoutingScreen extends ConsumerState<ScoutingScreen> {
         title: Text(
           "Reefscape Scouting",
           style: GoogleFonts.nunito(
-            fontSize: 45.0,
+            fontSize: 26.0,
             fontWeight: FontWeight.w900,
             color: Colors.white,
           ),
@@ -273,10 +273,316 @@ class _ScoutingScreen extends ConsumerState<ScoutingScreen> {
             ],
           ),
         ),
-        child: Column(
-          children: [],
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1100),
+                child: GridView.count(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 20.0,
+                  mainAxisSpacing: 20.0,
+                  childAspectRatio: 3.8,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(16.0),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.2),
+                          width: 1.0,
+                        ),
+                      ),
+                      child: Consumer(
+                          builder: (context, ref, child) {
+                            final l1Count = ref.watch(coralL1);
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      "Coral L1",
+                                      style: GoogleFonts.nunito(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        onPressed: () {
+                                          ref.read(coralL1.notifier).decrement();
+                                        },
+                                        icon: const Icon(Icons.remove_circle_outline, color: Colors.white),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                                        child: Text(
+                                          "$l1Count",
+                                          style: GoogleFonts.nunito(
+                                            fontSize: 20.0,
+                                            fontWeight: FontWeight.w900,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                      IconButton(
+                                        onPressed: () {
+                                          ref.read(coralL1.notifier).increment();
+                                        },
+                                        icon: const Icon(Icons.add_circle_outline, color: Colors.white),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(16.0),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 1.0),
+                      ),
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          final l2Count = ref.watch(coralL2);
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    "Coral L2",
+                                    style: GoogleFonts.nunito(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () => ref.read(coralL2.notifier).decrement(),
+                                      icon: const Icon(Icons.remove_circle_outline, color: Colors.white),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                      child: Text(
+                                        "$l2Count",
+                                        style: GoogleFonts.nunito(
+                                            fontSize: 20.0,
+                                            fontWeight: FontWeight.w900,
+                                            color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    IconButton(
+                                      onPressed: () => ref.read(coralL2.notifier).increment(),
+                                      icon: const Icon(Icons.add_circle_outline, color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(16.0),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 1.0),
+                      ),
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          final l3Count = ref.watch(coralL3);
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    "Coral L3",
+                                    style: GoogleFonts.nunito(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () => ref.read(coralL3.notifier).decrement(),
+                                      icon: const Icon(Icons.remove_circle_outline, color: Colors.white),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                      child: Text(
+                                        "$l3Count",
+                                        style: GoogleFonts.nunito(
+                                            fontSize: 20.0,
+                                            fontWeight: FontWeight.w900,
+                                            color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    IconButton(
+                                      onPressed: () => ref.read(coralL3.notifier).increment(),
+                                      icon: const Icon(Icons.add_circle_outline, color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(16.0),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 1.0),
+                      ),
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          final l4Count = ref.watch(coralL4);
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    "Coral L4",
+                                    style: GoogleFonts.nunito(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () => ref.read(coralL4.notifier).decrement(),
+                                      icon: const Icon(Icons.remove_circle_outline, color: Colors.white),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                      child: Text(
+                                        "$l4Count",
+                                        style: GoogleFonts.nunito(
+                                            fontSize: 20.0,
+                                            fontWeight: FontWeight.w900,
+                                            color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    IconButton(
+                                      onPressed: () => ref.read(coralL4.notifier).increment(),
+                                      icon: const Icon(Icons.add_circle_outline, color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+            ),
+              ),
+        ),
+
         ),
         ),
-    );
+        );
   }
 }
+
+  class CoralL1 extends Notifier<int> {
+    @override
+     int build() {
+     return 0;
+  }
+    void increment() {
+        state++;
+}
+    void decrement() {
+      if (state > 0) {
+        state--;
+  }
+}
+}
+
+final coralL1 = NotifierProvider<CoralL1, int>(CoralL1.new);
+
+class CoralL2 extends Notifier<int> {
+  @override
+  int build() {
+    return 0;
+  }
+  void increment() {
+    state++;
+  }
+  void decrement() {
+    if (state > 0) {
+      state--;
+    }
+  }
+}
+
+final coralL2 = NotifierProvider<CoralL2, int>(CoralL2.new);
+
+class CoralL3 extends Notifier<int> {
+  @override
+  int build() {
+    return 0;
+  }
+  void increment() {
+    state++;
+  }
+  void decrement() {
+    if (state > 0) {
+      state--;
+    }
+  }
+}
+
+final coralL3 = NotifierProvider<CoralL3, int>(CoralL3.new);
+
+class CoralL4 extends Notifier<int> {
+  @override
+  int build() {
+    return 0;
+  }
+  void increment() {
+    state++;
+  }
+  void decrement() {
+    if (state > 0) {
+      state--;
+    }
+  }
+}
+
+final coralL4 = NotifierProvider<CoralL4, int>(CoralL4.new);
+
