@@ -506,6 +506,112 @@ class _ScoutingScreen extends ConsumerState<ScoutingScreen> {
                         },
                       ),
                     ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(16.0),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 1.0),
+                      ),
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          final processedAlgaeCount = ref.watch(processedAlgae);
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    "Processed Algae",
+                                    style: GoogleFonts.nunito(
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () => ref.read(processedAlgae.notifier).decrement(),
+                                      icon: const Icon(Icons.remove_circle_outline, color: Colors.white),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                      child: Text(
+                                        "$processedAlgaeCount",
+                                        style: GoogleFonts.nunito(
+                                          fontSize: 20.0,
+                                          fontWeight: FontWeight.w900,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    IconButton(
+                                      onPressed: () => ref.read(processedAlgae.notifier).increment(),
+                                      icon: const Icon(Icons.add_circle_outline, color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(16.0),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 1.0),
+                      ),
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          final unprocessedAlgaeCount = ref.watch(unprocessedAlgae);
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    "Unprocessed Algae",
+                                    style: GoogleFonts.nunito(
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () => ref.read(unprocessedAlgae.notifier).decrement(),
+                                      icon: const Icon(Icons.remove_circle_outline, color: Colors.white),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                      child: Text(
+                                        "$unprocessedAlgaeCount",
+                                        style: GoogleFonts.nunito(
+                                          fontSize: 20.0,
+                                          fontWeight: FontWeight.w900,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    IconButton(
+                                      onPressed: () => ref.read(unprocessedAlgae.notifier).increment(),
+                                      icon: const Icon(Icons.add_circle_outline, color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   ],
                 ),
             ),
@@ -585,4 +691,39 @@ class CoralL4 extends Notifier<int> {
 }
 
 final coralL4 = NotifierProvider<CoralL4, int>(CoralL4.new);
+
+class ProcessedAlgae extends Notifier<int> {
+  @override
+  int build() {
+    return 0;
+  }
+  void increment() {
+    state++;
+  }
+  void decrement() {
+    if (state > 0) {
+      state--;
+    }
+  }
+}
+
+final processedAlgae = NotifierProvider<ProcessedAlgae, int>(ProcessedAlgae.new);
+
+
+class UnprocessedAlgae extends Notifier<int> {
+  @override
+  int build() {
+    return 0;
+  }
+  void increment() {
+    state++;
+  }
+  void decrement() {
+    if (state > 0) {
+      state--;
+    }
+  }
+}
+
+final unprocessedAlgae = NotifierProvider<UnprocessedAlgae, int>(UnprocessedAlgae.new);
 
