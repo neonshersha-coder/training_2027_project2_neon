@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 final GoRouter _router = GoRouter(
   initialLocation: '/',
@@ -22,6 +24,46 @@ final GoRouter _router = GoRouter(
 final matchNumberBox = StateProvider<int>((ref) => 0);
 final teamNumberBox = StateProvider<int>((ref) => 0);
 final teamNameBox = StateProvider<String>((ref) => "");
+
+class TBATeam {
+final int teamNumber;
+final String nickname;
+
+TBATeam({required this.teamNumber, required this.nickname});
+
+factory TBATeam.fromJson(Map<String, dynamic> json) {
+  return TBATeam(
+    teamNumber: json['team_number'] ?? 0,
+    nickname: json['nickname'] ?? 'Unknown Team',
+  );
+}
+}
+
+Future<List<TBATeam>> fetchEventTeams(String eventKey) async {
+  const String tbaApiKey = "hCN0sofO5WBe6LHi09e38ohUOeTSD7t94MQjB7bTyLZzWxFJZooY9fht9wRoftyC"; // Replace with your key from TBA accoun
+  final url = Uri.parse('https://www.thebluealliance.com/api/v3/event/$eventKey/teams/simple');
+
+  try {
+    final response = await http.get(
+      url,
+      headers: {'X-TBA-Auth-Key': tbaApiKey},
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      return data.map((json) => TBATeam.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load teams (Status: ${response.statusCode})');
+    }
+  } catch (e) {
+    print('Error connecting to TBA: $e');
+    return [];
+  }
+}
+
+final eventTeamsProvider = FutureProvider<List<TBATeam>>((ref) async {
+  return fetchEventTeams("2025waahs");
+});
 
 void main() {
   runApp(
@@ -117,6 +159,37 @@ class _MyAppState extends ConsumerState<MyApp> {
                       },
                     ),
                     const SizedBox(height: 25),
+
+                    ref.watch(eventTeamsProvider).when(
+                      loading: () => const LinearProgressIndicator(color: Colors.orange),
+                      error: (err, stack) => Text("Error loading TBA teams: $err", style: const TextStyle(color: Colors.orangeAccent)),
+                      data: (teams) {
+                        teams.sort((a, b) => a.teamNumber.compareTo(b.teamNumber));
+                        return DropdownButtonFormField<TBATeam>(
+                          dropdownColor: const Color(0xFF5A359C),
+                          style: const TextStyle(color: Colors.white, fontSize: 16),
+                          decoration: const InputDecoration(
+                            labelText: "Select Team from TBA Event",
+                            labelStyle: TextStyle(color: Colors.white),
+                          ),
+                          items: teams.map((team) {
+                            return DropdownMenuItem<TBATeam>(
+                              value: team,
+                              child: Text("${team.teamNumber} - ${team.nickname}"),
+                            );
+                          }).toList(),
+                          onChanged: (selectedTeam) {
+                            if (selectedTeam != null) {
+                              teamNumberController.text = selectedTeam.teamNumber.toString();
+                              teamController.text = selectedTeam.nickname;
+                              ref.read(teamNumberBox.notifier).state = selectedTeam.teamNumber;
+                              ref.read(teamNameBox.notifier).state = selectedTeam.nickname;
+                              checkFields();
+                            }
+                          },
+                        );
+                      },
+                    ),
 
                     TextField(
                       controller: teamNumberController,
@@ -317,20 +390,35 @@ class _ScoutingScreen extends ConsumerState<ScoutingScreen> {
                       child: Consumer(
                           builder: (context, ref, child) {
                             final l1Count = ref.watch(coralL1);
+                            final int l1Points = l1Count * 3;
                             return Padding(
                               padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
                               child: Row(
                                 children: [
                                   Expanded(
-                                    child: Text(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
                                       "Coral L1",
                                       style: GoogleFonts.nunito(
                                         fontSize: 18.0,
                                         fontWeight: FontWeight.w700,
                                         color: Colors.white,
                                       ),
-                                    ),
-                                  ),
+                              ),
+                                Text(
+                                      "Score: $l1Points",
+                                         style: GoogleFonts.nunito(
+                                         fontSize: 14.0,
+                                         fontWeight: FontWeight.w600,
+                                         color: Colors.orangeAccent,
+                            ),
+                            ),
+                            ],
+                            ),
+                            ),
                                   Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -359,10 +447,10 @@ class _ScoutingScreen extends ConsumerState<ScoutingScreen> {
                                       ),
                                     ],
                                   ),
-                                ],
-                              ),
+                            ],
+                            ),
                             );
-                          }
+                          },
                       ),
                     ),
                     Container(
