@@ -19,8 +19,6 @@ final GoRouter _router = GoRouter(
 );
 
 
-
-
 final matchNumberBox = StateProvider<int>((ref) => 0);
 final teamNumberBox = StateProvider<int>((ref) => 0);
 final teamNameBox = StateProvider<String>((ref) => "");
@@ -161,9 +159,9 @@ class _MyAppState extends ConsumerState<MyApp> {
                   ),
                 ),
                   onPressed: () {
-                    int currentMatch = ref.read(matchNumberBox);
-                    int currentTeam = ref.read(teamNumberBox);
-                    String currentName = ref.read(teamNameBox);
+                    int currentMatch = int.tryParse(matchController.text) ?? 0;
+                    int currentTeam = int.tryParse(teamNumberController.text) ?? 0;
+                    String currentName = teamController.text.trim();
 
                     if (currentMatch == 0 || currentTeam == 0 || currentName.isEmpty) {
                       showDialog(
@@ -181,6 +179,26 @@ class _MyAppState extends ConsumerState<MyApp> {
                           },
                       );
                     } else {
+
+                      ref.read(matchNumberBox.notifier).state = currentMatch;
+                      ref.read(teamNumberBox.notifier).state = currentTeam;
+                      ref.read(teamNameBox.notifier).state = currentName;
+
+                      ref.read(coralL1.notifier).reset();
+                      ref.read(coralL2.notifier).reset();
+                      ref.read(coralL3.notifier).reset();
+                      ref.read(coralL4.notifier).reset();
+                      ref.read(processedAlgae.notifier).reset();
+                      ref.read(unprocessedAlgae.notifier).reset();
+                      ref.read(algaeNet.notifier).reset();
+
+                      matchController.clear();
+                      teamNumberController.clear();
+                      teamController.clear();
+                      setState(() {
+                        textFieldFilled = false;
+                      });
+
                       context.go('/scouting');
                     }
 
@@ -612,15 +630,68 @@ class _ScoutingScreen extends ConsumerState<ScoutingScreen> {
                         },
                       ),
                     ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(16.0),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 1.0),
+                      ),
+                      child: Consumer(
+                          builder: (context, ref, child) {
+                            final netCount = ref.watch(algaeNet);
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                              child: Row(
+                                children: [
+                              Expanded(
+                              child: Text(
+                              "Algae Net",
+                                style: GoogleFonts.nunito(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                      onPressed: () => ref.read(algaeNet.notifier).decrement(),
+                                      icon: const Icon(Icons.remove_circle_outline, color: Colors.white),
+                            ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                    child: Text(
+                                      "$netCount",
+                                      style: GoogleFonts.nunito(
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.w900,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () => ref.read(algaeNet.notifier).increment(),
+                                    icon: const Icon(Icons.add_circle_outline, color: Colors.white),
+                              ),
+                            ],
+                            ),
+                            ],
+                            )
+                            );
+                          }
+                      ),
+                    ),
                   ],
                 ),
-            ),
               ),
-        ),
+            ),
+          ),
 
         ),
-        ),
-        );
+      ),
+    );
   }
 }
 
@@ -637,7 +708,10 @@ class _ScoutingScreen extends ConsumerState<ScoutingScreen> {
         state--;
   }
 }
-}
+    int reset() {
+      return state = 0;
+    }
+  }
 
 final coralL1 = NotifierProvider<CoralL1, int>(CoralL1.new);
 
@@ -653,6 +727,9 @@ class CoralL2 extends Notifier<int> {
     if (state > 0) {
       state--;
     }
+  }
+  int reset() {
+    return state = 0;
   }
 }
 
@@ -671,6 +748,9 @@ class CoralL3 extends Notifier<int> {
       state--;
     }
   }
+  int reset() {
+    return state = 0;
+  }
 }
 
 final coralL3 = NotifierProvider<CoralL3, int>(CoralL3.new);
@@ -688,6 +768,9 @@ class CoralL4 extends Notifier<int> {
       state--;
     }
   }
+  int reset() {
+    return state = 0;
+  }
 }
 
 final coralL4 = NotifierProvider<CoralL4, int>(CoralL4.new);
@@ -704,6 +787,9 @@ class ProcessedAlgae extends Notifier<int> {
     if (state > 0) {
       state--;
     }
+  }
+  int reset() {
+    return state = 0;
   }
 }
 
@@ -723,7 +809,31 @@ class UnprocessedAlgae extends Notifier<int> {
       state--;
     }
   }
+  int reset() {
+    return state = 0;
+  }
 }
 
 final unprocessedAlgae = NotifierProvider<UnprocessedAlgae, int>(UnprocessedAlgae.new);
 
+class AlgaeNet extends Notifier<int> {
+  @override
+  int build() {
+    return 0;
+  }
+
+  void increment() {
+    state++;
+  }
+
+  void decrement() {
+    if (state > 0) {
+      state--;
+    }
+  }
+  int reset() {
+    return state = 0;
+  }
+}
+
+final algaeNet = NotifierProvider<AlgaeNet, int>(AlgaeNet.new);
